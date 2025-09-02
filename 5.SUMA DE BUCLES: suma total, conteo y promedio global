@@ -1,0 +1,14 @@
+def suma_de_bucles(matriz_3d):
+    """
+    Recorre toda la matriz 3D y devuelve:
+    (suma_total, conteo_de_valores, promedio_global)
+    """
+    suma_total = 0.0
+    conteo = 0
+    for i_ciudad in range(len(matriz_3d)):
+        for i_semana in range(len(matriz_3d[i_ciudad])):
+            for i_dia in range(len(matriz_3d[i_ciudad][i_semana])):
+                suma_total += matriz_3d[i_ciudad][i_semana][i_dia]
+                conteo += 1
+    promedio_global = round(suma_total / conteo, 2) if conteo else None
+    return suma_total, conteo, promedio_global
