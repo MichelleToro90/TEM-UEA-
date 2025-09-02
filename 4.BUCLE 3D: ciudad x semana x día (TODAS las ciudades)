@@ -1,0 +1,18 @@
+def bucle_3d_promedios(matriz_3d):
+    """
+    matriz_3d: [ciudad][semana][día]
+    return: lista de listas con promedios por semana para cada ciudad.
+    """
+    todos_promedios = []
+    for i_ciudad in range(len(matriz_3d)):
+        proms_ciudad = []
+        for i_semana in range(len(matriz_3d[i_ciudad])):
+            suma = 0.0
+            cuenta = 0
+            for i_dia in range(len(matriz_3d[i_ciudad][i_semana])):
+                suma += matriz_3d[i_ciudad][i_semana][i_dia]
+                cuenta += 1
+            prom = round(suma / cuenta, 2) if cuenta else None
+            proms_ciudad.append(prom)
+        todos_promedios.append(proms_ciudad)
+    return todos_promedios
