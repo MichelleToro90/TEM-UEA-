@@ -1,0 +1,15 @@
+def bucle_2d_promedios(matriz_2d):
+    """
+    matriz_2d: lista de semanas; cada semana es lista de 7 días (floats).
+    return: lista de promedios por semana (floats).
+    """
+    promedios_semana = []
+    for i_semana in range(len(matriz_2d)):
+        suma = 0.0
+        cuenta = 0
+        for i_dia in range(len(matriz_2d[i_semana])):
+            suma += matriz_2d[i_semana][i_dia]
+            cuenta += 1
+        prom = round(suma / cuenta, 2) if cuenta else None
+        promedios_semana.append(prom)
+    return promedios_semana
