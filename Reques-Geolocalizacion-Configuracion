@@ -1,0 +1,70 @@
+# pip install requests
+import requests
+from datetime import date, timedelta
+
+# ---------- Configuración ----------
+NUM_SEMANAS = 4
+TZ = "America/Guayaquil"
+DIAS = ["Lunes","Martes","Miércoles","Jueves","Viernes","Sábado","Domingo"]
+
+GEOCODE_URL = "https://geocoding-api.open-meteo.com/v1/search"
+ARCHIVE_URL = "https://archive-api.open-meteo.com/v1/archive"
+
+
+# ---------- Utilidades de geocodificación ----------
+def geocodificar_opciones(nombre, count=5, lang="es"):
+    """
+    Devuelve una lista de posibles coincidencias para 'nombre'.
+    Cada item es un dict con name, country, admin1, latitude, longitude.
+    """
+    params = {"name": nombre, "count": count, "language": lang, "format": "json"}
+    r = requests.get(GEOCODE_URL, params=params, timeout=30)
+    r.raise_for_status()
+    data = r.json()
+    return data.get("results", [])
+
+
+def construir_etiqueta(o):
+    """Crea una etiqueta legible tipo 'Guayaquil, Guayas, Ecuador'."""
+    partes = [o.get("name")]
+    if o.get("admin1"):
+        partes.append(o["admin1"])
+    if o.get("country"):
+        partes.append(o["country"])
+    return ", ".join([p for p in partes if p])
+
+
+def elegir_ciudad(nombre_busqueda):
+    """
+    Muestra opciones al usuario si hay varias coincidencias y retorna:
+    (etiqueta_mostrable, lat, lon)
+    """
+    opciones = geocodificar_opciones(nombre_busqueda)
+    if not opciones:
+        raise ValueError(f"No encontré coordenadas para: {nombre_busqueda}")
+
+    # Si hay una sola, la tomamos directo
+    if len(opciones) == 1:
+        o = opciones[0]
+        etiqueta = construir_etiqueta(o)
+        return etiqueta, o["latitude"], o["longitude"]
+
+    # Varias opciones: listar y pedir elección
+    print(f"\nSe encontraron varias coincidencias para '{nombre_busqueda}':")
+    for i, o in enumerate(opciones, start=1):
+        print(f"  {i}. {construir_etiqueta(o)}  (lat={o['latitude']}, lon={o['longitude']})")
+
+    while True:
+        sel = input("Elige un número (Enter = 1): ").strip()
+        if sel == "":
+            idx = 1
+        else:
+            if not sel.isdigit():
+                print("Ingresa un número válido.")
+                continue
+            idx = int(sel)
+        if 1 <= idx <= len(opciones):
+            o = opciones[idx - 1]
+            etiqueta = construir_etiqueta(o)
+            return etiqueta, o["latitude"], o["longitude"]
+        print("Fuera de rango, intenta de nuevo.")
