@@ -163,5 +163,15 @@ def main():
             print(f"  Semana {i_sem}: {valor} °C")
 
 
+
 if __name__ == "__main__":
-    main()
+    try:
+        while True:
+            main()  # corre todo tu proceso una vez
+            otra = input("\n¿Quieres hacer otra consulta? [s/N]: ").strip().lower()
+            if otra not in ("s", "si", "y", "yes"):
+                print("¡Listo! Hasta luego.")
+                break
+    except KeyboardInterrupt:
+        print("\nCancelado por el usuario.")
+
