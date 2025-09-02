@@ -1,0 +1,15 @@
+def maximo_de_bucles(matriz_3d):
+    """
+    return: (maximo, idx_ciudad, idx_semana, idx_dia)
+    Si está vacío: (None, None, None, None)
+    """
+    max_val = None
+    idxs = (None, None, None)
+    for i_ciudad in range(len(matriz_3d)):
+        for i_semana in range(len(matriz_3d[i_ciudad])):
+            for i_dia in range(len(matriz_3d[i_ciudad][i_semana])):
+                val = matriz_3d[i_ciudad][i_semana][i_dia]
+                if (max_val is None) or (val > max_val):
+                    max_val = val
+                    idxs = (i_ciudad, i_semana, i_dia)
+    return (max_val,) + idxs
