@@ -1,0 +1,40 @@
+def temps_diarias_promedio(lat, lon, start, end, tz=TZ):
+    """Devuelve lista de temperaturas diarias promedio (°C) entre start y end."""
+    params = {
+        "latitude": lat,
+        "longitude": lon,
+        "start_date": start.isoformat(),
+        "end_date": end.isoformat(),
+        "daily": "temperature_2m_mean",
+        "timezone": tz,
+        "temperature_unit": "celsius",
+    }
+    r = requests.get(ARCHIVE_URL, params=params, timeout=30)
+    r.raise_for_status()
+    d = r.json()
+    daily = d.get("daily", {})
+    vals = daily.get("temperature_2m_mean")
+    if not vals:
+        raise RuntimeError("La API no devolvió 'temperature_2m_mean' para ese rango.")
+    return vals  # lista de floats
+
+
+def pedir_ciudades():
+    """
+    Pide al usuario una o varias ciudades.
+    Sugerencia: separar ciudades con ';'
+    """
+    print("Ingresa una o varias ciudades. Ejemplo:")
+    print("  Quito, Ecuador; Guayaquil, Ecuador; Cuenca, Ecuador")
+    entrada = input("Ciudades: ").strip()
+
+    if not entrada:
+        # Predeterminadas si no escribe nada
+        return ["Quito, Ecuador", "Guayaquil, Ecuador", "Cuenca, Ecuador"]
+
+    # Si el usuario usó ';' o '|', separamos; si no, tomamos una sola ciudad
+    if ";" in entrada or "|" in entrada:
+        brutos = [c.strip() for c in entrada.replace("|", ";").split(";")]
+        return [c for c in brutos if c]
+    else:
+        return [entrada]
