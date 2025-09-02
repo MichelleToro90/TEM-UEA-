@@ -19,3 +19,39 @@ def resuelto(etiquetas, temperaturas):
     print("\n=== SUMA DE BUCLES: Suma total, conteo y promedio global ===")
     suma_total, conteo, promedio_global = suma_de_bucles(temperaturas)
     print(f"Suma total: {round(suma_total, 2)}   Conteo: {conteo}   Promedio global: {promedio_global} °C")
+# ====================== PROGRAMA PRINCIPAL ======================
+def main():
+    # --- Rango de fechas: últimas 4 semanas completas (histórico suele retrasarse unos días) ---
+    hoy = date.today()
+    end_date = hoy - timedelta(days=5)  # margen por retraso del histórico
+    start_date = end_date - timedelta(days=7 * NUM_SEMANAS - 1)
+
+    # --- Pedir ciudades al usuario y resolver coordenadas ---
+    ciudades_ingresadas = pedir_ciudades()
+    seleccionadas = []  # [(etiqueta, lat, lon), ...]
+    for nombre in ciudades_ingresadas:
+        etiqueta, lat, lon = elegir_ciudad(nombre)
+        seleccionadas.append((etiqueta, lat, lon))
+
+    # --- Construir matriz 3D [ciudad][semana][día] ---
+    temperaturas = []  # por ciudad: lista de semanas; por semana: 7 valores
+    etiquetas = []
+    for etiqueta, lat, lon in seleccionadas:
+        diarias = temps_diarias_promedio(lat, lon, start_date, end_date, TZ)
+        # Asegura múltiplos de 7 días y toma las últimas NUM_SEMANAS semanas
+        dias_utiles = (len(diarias) // 7) * 7
+        diarias = diarias[-dias_utiles:]
+        semanas = []
+        for w in range(len(diarias) // 7):
+            semana = diarias[w * 7:(w + 1) * 7]
+            semanas.append(semana)
+        semanas = semanas[-NUM_SEMANAS:]  # recorta a NUM_SEMANAS
+        temperaturas.append(semanas)
+        etiquetas.append(etiqueta)
+
+    # --- Mostrar resultados de todas las secciones ---
+    resuelto(etiquetas, temperaturas)
+
+
+if __name__ == "__main__":
+    main()
