@@ -1,0 +1,21 @@
+def resuelto(etiquetas, temperaturas):
+    # BUCLE 2D (una ciudad a la vez)
+    print("\n=== BUCLE 2D: Promedios por semana (UNA ciudad) ===")
+    for i, etiqueta in enumerate(etiquetas):
+        proms_2d = bucle_2d_promedios(temperaturas[i])
+        print(f"\n{etiqueta}:")
+        for i_sem, p in enumerate(proms_2d, start=1):
+            print(f"  Semana {i_sem}: {p} °C")
+
+    # BUCLE 3D (todas las ciudades)
+    print("\n=== BUCLE 3D: Promedios por semana (TODAS) ===")
+    proms_3d = bucle_3d_promedios(temperaturas)
+    for i_ciudad, etiqueta in enumerate(etiquetas):
+        print(f"\nPromedios semanales de {etiqueta}:")
+        for i_sem, p in enumerate(proms_3d[i_ciudad], start=1):
+            print(f"  Semana {i_sem}: {p} °C")
+
+    # SUMA DE BUCLES
+    print("\n=== SUMA DE BUCLES: Suma total, conteo y promedio global ===")
+    suma_total, conteo, promedio_global = suma_de_bucles(temperaturas)
+    print(f"Suma total: {round(suma_total, 2)}   Conteo: {conteo}   Promedio global: {promedio_global} °C")
